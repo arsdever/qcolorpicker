@@ -58,6 +58,8 @@ int main(int argc, char** argv)
 
     QApplication app(argc, argv);
 
+    configureColorScheme();
+
     QColorPicker picker;
     picker.exec();
     qDebug() << picker.color();

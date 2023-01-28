@@ -6,9 +6,10 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
-#include <QSlider>
 
 #include "qcolorpicker/qcolorpicker.hpp"
+
+#include "qcolorpicker_slider.hpp"
 
 QColorPicker::QColorPicker(QWidget* parent)
     : QDialog(parent)
@@ -32,10 +33,12 @@ QColorPicker::QColorPicker(QWidget* parent)
 
     QGridLayout* colorSliders = new QGridLayout;
 
-    QSlider* hueSlider = new QSlider(Qt::Horizontal);
-    QSlider* saturationSlider = new QSlider(Qt::Horizontal);
-    QSlider* brightnessSlider = new QSlider(Qt::Horizontal);
-    QSlider* alphaSlider = new QSlider(Qt::Horizontal);
+    QColorPickerSlider* hueSlider = new QColorPickerSlider(Qt::Horizontal);
+    QColorPickerSlider* saturationSlider =
+        new QColorPickerSlider(Qt::Horizontal);
+    QColorPickerSlider* brightnessSlider =
+        new QColorPickerSlider(Qt::Horizontal);
+    QColorPickerSlider* alphaSlider = new QColorPickerSlider(Qt::Horizontal);
     QLabel* hueLabel = new QLabel;
     QLabel* saturationLabel = new QLabel;
     QLabel* brightnessLabel = new QLabel;
@@ -56,6 +59,18 @@ QColorPicker::QColorPicker(QWidget* parent)
 
     connect(hueSlider, &QSlider::valueChanged, this, [ = ](int value) {
         hueLabel->setText(QString::number(value));
+        saturationSlider->setGradientStops({
+            {  0.0 / 255.0, QColor::fromHsv(value,   0, 255)},
+            {255.0 / 255.0, QColor::fromHsv(value, 255, 255)}
+        });
+        brightnessSlider->setGradientStops({
+            {  0.0 / 255.0, QColor::fromHsv(value, 255,   0)},
+            {255.0 / 255.0, QColor::fromHsv(value, 255, 255)}
+        });
+        alphaSlider->setGradientStops({
+            {  0.0 / 255.0, QColor::fromHsv(value, 255, 255,   0)},
+            {255.0 / 255.0, QColor::fromHsv(value, 255, 255, 255)}
+        });
         updateColor();
     });
     connect(saturationSlider, &QSlider::valueChanged, this, [ = ](int value) {
@@ -76,10 +91,50 @@ QColorPicker::QColorPicker(QWidget* parent)
     brightnessLabel->setText(QString::number(brightnessSlider->value()));
     alphaLabel->setText(QString::number(alphaSlider->value()));
 
-    hueSlider->setRange(0, 359);
+    hueLabel->setMinimumSize(hueLabel->fontMetrics().boundingRect("000").size()
+    );
+    saturationLabel->setMinimumSize(
+        saturationLabel->fontMetrics().boundingRect("000").size()
+    );
+    brightnessLabel->setMinimumSize(
+        brightnessLabel->fontMetrics().boundingRect("000").size()
+    );
+    alphaLabel->setMinimumSize(
+        alphaLabel->fontMetrics().boundingRect("000").size()
+    );
+
+    hueLabel->setAlignment(Qt::AlignRight);
+    saturationLabel->setAlignment(Qt::AlignRight);
+    brightnessLabel->setAlignment(Qt::AlignRight);
+    alphaLabel->setAlignment(Qt::AlignRight);
+
+    hueSlider->setRange(0, 360);
+    hueSlider->setGradientStops({
+        {  0.0 / 360.0,     Qt::red},
+        { 60.0 / 360.0,  Qt::yellow},
+        {120.0 / 360.0,   Qt::green},
+        {180.0 / 360.0,    Qt::cyan},
+        {240.0 / 360.0,    Qt::blue},
+        {300.0 / 360.0, Qt::magenta},
+        {360.0 / 360.0,     Qt::red}
+    });
     saturationSlider->setRange(0, 255);
     brightnessSlider->setRange(0, 255);
     alphaSlider->setRange(0, 255);
+
+    saturationSlider->setGradientStops({
+        {0.0 / 360.0, QColor::fromHsv(hueSlider->value(),   0, 255)},
+        {1.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255)}
+    });
+    brightnessSlider->setGradientStops({
+        {0.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255,   0)},
+        {1.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255)}
+    });
+    alphaSlider->setRenderCheckerboard(true);
+    alphaSlider->setGradientStops({
+        {0.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255,   0)},
+        {1.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255, 255)}
+    });
 
     hueSlider->setValue(180);
     saturationSlider->setValue(255);
