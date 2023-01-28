@@ -108,7 +108,7 @@ QColorPicker::QColorPicker(QWidget* parent)
     brightnessLabel->setAlignment(Qt::AlignRight);
     alphaLabel->setAlignment(Qt::AlignRight);
 
-    hueSlider->setRange(0, 360);
+    hueSlider->setRange(0, 359);
     hueSlider->setGradientStops({
         {  0.0 / 360.0,     Qt::red},
         { 60.0 / 360.0,  Qt::yellow},
@@ -116,25 +116,26 @@ QColorPicker::QColorPicker(QWidget* parent)
         {180.0 / 360.0,    Qt::cyan},
         {240.0 / 360.0,    Qt::blue},
         {300.0 / 360.0, Qt::magenta},
-        {360.0 / 360.0,     Qt::red}
+        {359.0 / 360.0,     Qt::red}
     });
     saturationSlider->setRange(0, 255);
     brightnessSlider->setRange(0, 255);
     alphaSlider->setRange(0, 255);
 
     saturationSlider->setGradientStops({
-        {0.0 / 360.0, QColor::fromHsv(hueSlider->value(),   0, 255)},
-        {1.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255)}
+        {  0.0 / 255.0, QColor::fromHsv(hueSlider->value(),   0, 255)},
+        {255.0 / 255.0, QColor::fromHsv(hueSlider->value(), 255, 255)}
     });
     brightnessSlider->setGradientStops({
-        {0.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255,   0)},
-        {1.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255)}
+        {  0.0 / 255.0, QColor::fromHsv(hueSlider->value(), 255,   0)},
+        {255.0 / 255.0, QColor::fromHsv(hueSlider->value(), 255, 255)}
     });
     alphaSlider->setRenderCheckerboard(true);
     alphaSlider->setGradientStops({
-        {0.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255,   0)},
-        {1.0 / 360.0, QColor::fromHsv(hueSlider->value(), 255, 255, 255)}
-    });
+        {  0.0 / 255.0, QColor::fromHsv(hueSlider->value(), 255, 255,   0)},
+        {255.0 / 255.0, QColor::fromHsv(hueSlider->value(), 255, 255, 255)}
+    }
+    );
 
     hueSlider->setValue(180);
     saturationSlider->setValue(255);
