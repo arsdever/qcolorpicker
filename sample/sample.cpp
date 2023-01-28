@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QDebug>
 #include <QPalette>
 #include <QSettings>
 #include <QStyleFactory>
@@ -59,6 +60,7 @@ int main(int argc, char** argv)
 
     QColorPicker picker;
     picker.exec();
+    qDebug() << picker.color();
 
     return 0;
 }

@@ -16,4 +16,14 @@ public:
      * @brief Destructor
      */
     ~QColorPicker();
+
+    /**
+     * @brief Get the color
+     *
+     * @return the color
+     */
+    QColor color() const;
+
+private:
+    QColor _selectedColor;
 };
